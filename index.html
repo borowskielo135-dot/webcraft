@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebCraft | zacznij swój biznes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="js/SplitText.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav id="nav">
+      <div class="logo" id="logo">Web<span>Craft</span></div>
+      <ul class="nav-links">
+        <li><a href="#uslugi">Usługi</a></li>
+        <li><a href="#proces">Proces</a></li>
+        <li><a href="#opinie">Opinie</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <button class="nav-cta" id="navCta" onclick="openModal()">
+        Darmowa wycena →
+      </button>
+    </nav>
+
+    <div class="hero" id="hero">
+      <div class="hero-grid"></div>
+      <div class="hero-glow" id="heroGlow"></div>
+      <div class="badge" id="badge">Dostępny na nowe projekty</div>
+      <h1 class="hero-title" id="heroTitle">
+        <span class="line-wrap"
+          ><span class="tl">Strony internetowe,</span></span
+        >
+        <span class="line-wrap"
+          ><span class="tl" style="-webkit-text-fill-color: var(--pl)"
+            >które sprzedają.</span
+          ></span
+        >
+      </h1>
+      <p class="hero-sub" id="heroSub">
+        Tworzę nowoczesne, szybkie i eleganckie strony internetowe dla firm,
+        które chcą wyróżnić się w sieci i zdobywać klientów 24/7.
+      </p>
+      <div class="hero-btns" id="heroBtns">
+        <button class="btn-primary" onclick="openModal()">
+          Zacznij projekt — bezpłatna wycena ✦
+        </button>
+        <button
+          class="btn-secondary"
+          onclick="
+            document
+              .getElementById('opinie')
+              .scrollIntoView({ behavior: 'smooth' })
+          "
+        >
+          Zobacz realizacje
+        </button>
+      </div>
+      <div class="scroll-line" id="scrollLine">
+        <span>Scroll</span>
+        <div class="scroll-line-bar"></div>
+      </div>
+    </div>
+
+    <div class="stats" id="statsBar">
+      <div class="stat">
+        <div class="stat-num" data-target="48" data-suffix="+">0+</div>
+        <div class="stat-label">Zrealizowanych projektów</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="100" data-suffix="%">0%</div>
+        <div class="stat-label">Zadowolonych klientów</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="5" data-suffix="★">0★</div>
+        <div class="stat-label">Średnia ocena</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" data-target="3" data-suffix=" dni">0 dni</div>
+        <div class="stat-label">Czas realizacji</div>
+      </div>
+    </div>
+
+    <div class="trusted-section">
+      <div class="trusted-label">Firmy, które nam zaufały</div>
+      <div style="overflow: hidden; position: relative">
+        <div
+          style="
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            background: linear-gradient(90deg, var(--black), transparent);
+            z-index: 2;
+            pointer-events: none;
+          "
+        ></div>
+        <div
+          style="
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            background: linear-gradient(-90deg, var(--black), transparent);
+            z-index: 2;
+            pointer-events: none;
+          "
+        ></div>
+        <div class="marquee-track" id="marqueeTrack"></div>
+      </div>
+    </div>
+
+    <section id="uslugi">
+      <div class="sec-head">
+        <p class="section-tag">Co oferuję</p>
+        <h2 class="section-title split-title">Kompleksowe usługi webowe</h2>
+        <p class="section-sub">
+          Od projektu po wdrożenie — dostajesz gotową stronę, która działa i
+          konwertuje.
+        </p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <img src="photos/landing.png" width="30" />
+          </div>
+          <h3>Landing Page</h3>
+          <p>
+            Jednostronicowe strony nastawione na konwersję. Idealne dla kampanii
+            reklamowych i ofert specjalnych.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <img src="photos/computer.png" width="30" />
+          </div>
+          <h3>Strony Firmowe</h3>
+          <p>
+            Profesjonalna wizytówka Twojej firmy. Buduj zaufanie i przyciągaj
+            nowych klientów przez całą dobę.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <img src="photos/ecommerce.png" width="30" />
+          </div>
+          <h3>Sklepy Internetowe</h3>
+          <p>
+            Sprzedawaj online bez ograniczeń. Szybkie, bezpieczne i intuicyjne
+            sklepy dostosowane do Twoich produktów.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <img src="photos/redesign.png" width="30" />
+          </div>
+          <h3>Redesign Strony</h3>
+          <p>
+            Masz starą stronę? Odświeżam ją tak, żeby wyglądała nowocześnie i
+            działała na nowych urządzeniach.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <img src="photos/speed-radar.png" width="30" />
+          </div>
+          <h3>Optymalizacja SEO</h3>
+          <p>
+            Pojawiaj się wysoko w Google. Optymalizuję strony tak, żeby klienci
+            znajdowali Cię sami.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <img src="photos/care.png" width="30" />
+          </div>
+          <h3>Opieka i Utrzymanie</h3>
+          <p>
+            Aktualizacje, kopie zapasowe i wsparcie techniczne. Nie zostawiam
+            Cię samego po wdrożeniu.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="proces"
+      style="background: rgba(192, 192, 192, 0.02); border-radius: 24px"
+    >
+      <div class="sec-head">
+        <p class="section-tag">Jak to działa</p>
+        <h2 class="section-title split-title">Prosty proces, szybki efekt</h2>
+        <p class="section-sub">
+          Od pierwszej rozmowy do gotowej strony — bez stresu i komplikacji.
+        </p>
+      </div>
+      <div class="process-steps">
+        <div class="process-step">
+          <div class="step-num">01</div>
+          <h4>Kontakt & Brief</h4>
+          <p>
+            Wypełniasz formularz, opisujesz projekt. Odpisuję w ciągu kilku
+            godzin.
+          </p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">02</div>
+          <h4>Wycena AI</h4>
+          <p>
+            Otrzymujesz wstępną wycenę od AI, a ja potwierdzam ją indywidualnie.
+          </p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">03</div>
+          <h4>Projekt & Realizacja</h4>
+          <p>Tworzę stronę według Twoich oczekiwań. Konsultuję każdy etap.</p>
+        </div>
+        <div class="process-step">
+          <div class="step-num">04</div>
+          <h4>Wdrożenie</h4>
+          <p>
+            Strona live w internecie. Szkolę Cię z obsługi i zostawiam z pełnym
+            wsparciem.
+          </p>
+        </div>
+      </div>
+      <div class="num-highlight">
+        <div class="num-block">
+          <div class="big">3×</div>
+          <p>średnio więcej zapytań od klientów po uruchomieniu nowej strony</p>
+        </div>
+        <div class="num-block">
+          <div class="big">98%</div>
+          <p>stron dostarczamy w terminie — bez opóźnień i niespodzianek</p>
+        </div>
+        <div class="num-block">
+          <div class="big">24h</div>
+          <p>czas odpowiedzi na każde zapytanie — zawsze w kontakcie</p>
+        </div>
+        <div class="num-block">
+          <div class="big">4.9★</div>
+          <p>średnia ocena od wszystkich dotychczasowych klientów</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="opinie">
+      <div class="sec-head">
+        <p class="section-tag">Opinie klientów</p>
+        <h2 class="section-title split-title">Co mówią o mnie klienci</h2>
+        <p class="section-sub">
+          Nie musisz mi wierzyć na słowo — przeczytaj co mówią osoby, które już
+          ze mną pracowały.
+        </p>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">
+            "Strona gotowa w 4 dni, wygląda lepiej niż się spodziewałem. Już w
+            pierwszym tygodniu dostałem 3 zapytania z internetu. Polecam bez
+            zastanowienia."
+          </p>
+          <div class="reviewer">
+            <div class="avatar">MK</div>
+            <div>
+              <div class="reviewer-name">Marek Kowalski</div>
+              <div class="reviewer-role">Właściciel serwisu hydraulicznego</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">
+            "Profesjonalne podejście, świetny kontakt i końcowy efekt przeszedł
+            moje oczekiwania. Strona jest szybka, nowoczesna i klienci ją
+            chwalą."
+          </p>
+          <div class="reviewer">
+            <div class="avatar">AN</div>
+            <div>
+              <div class="reviewer-name">Anna Nowak</div>
+              <div class="reviewer-role">Właścicielka salonu kosmetycznego</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">
+            "Zainwestowałem w landing page pod kampanię Google Ads. Konwersja
+            wzrosła o 60% w porównaniu do starej strony. Najlepsza inwestycja w
+            tym roku."
+          </p>
+          <div class="reviewer">
+            <div class="avatar">PW</div>
+            <div>
+              <div class="reviewer-name">Piotr Wiśniewski</div>
+              <div class="reviewer-role">CEO agencji marketingowej</div>
+            </div>
+          </div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p class="review-text">
+            "Naprawde bardzo polecam, niska cena a jakość niesamowita o czasie
+            juz nawet nie bede wspominał, CUDO!."
+          </p>
+          <div class="reviewer">
+            <div class="avatar">PZ</div>
+            <div>
+              <div class="reviewer-name">Patryk Zając</div>
+              <div class="reviewer-role">właściciel pizzeri</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="faq"
+      style="background: rgba(192, 192, 192, 0.02); border-radius: 24px"
+    >
+      <div class="sec-head">
+        <p class="section-tag">Masz pytania?</p>
+        <h2 class="section-title split-title">Najczęstsze pytania</h2>
+        <p class="section-sub">
+          Odpowiadam na to, co najczęściej mnie pytają przed startem projektu.
+        </p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">
+            Ile kosztuje strona internetowa? <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">
+            Cena zależy od zakresu projektu. Prosta landing page zaczyna się od
+            300 zł, strona firmowa od 700 zł, a sklep internetowy od 1500 zł.
+            Skorzystaj z formularza wyceny — AI oszacuje koszt natychmiast, a ja
+            potwierdzę indywidualnie.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Ile trwa wykonanie strony? <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">
+            Landing page gotowa jest zazwyczaj w 2–5 dni roboczych. Strona
+            firmowa zajmuje 1–2 tygodnie. Sklep internetowy to 2–4 tygodnie.
+            Zawsze podaję realny termin przed startem projektu.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Czy strona będzie działać na telefonie?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">
+            Oczywiście. Każda strona jest w pełni responsywna i wygląda
+            doskonale zarówno na komputerze, tablecie jak i smartfonie. To
+            absolutny standard.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Co jest potrzebne żeby zacząć? <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">
+            Wystarczy wypełnić formularz wyceny. Zapytam Cię o branżę, cel
+            strony i ewentualne inspiracje — i przygotuję ofertę. Nie
+            potrzebujesz nic technicznego.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Czy mogę później samodzielnie edytować treść?
+            <span class="faq-icon">+</span>
+          </div>
+          <div class="faq-a">
+            Tak! Jeśli chcesz mieć panel do samodzielnej edycji, integruję
+            stronę z prostym CMS-em. Możesz wtedy zmieniać teksty, zdjęcia i
+            ceny bez wiedzy technicznej.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cta-section" id="kontakt">
+      <div class="cta-bg"></div>
+      <p class="section-tag" style="text-align: center">Gotowy na zmianę?</p>
+      <h2 id="ctaTitle">Zacznijmy razem<br />coś wyjątkowego.</h2>
+      <p>Wypełnij formularz i dostań bezpłatną wycenę AI w ciągu 30 sekund.</p>
+      <button
+        class="btn-primary"
+        style="font-size: 1.05rem; padding: 18px 44px"
+        onclick="openModal()"
+      >
+        Bezpłatna wycena ✦
+      </button>
+    </div>
+
+    <footer>
+      <div class="footer-logo">WebCraft</div>
+      <div>© 2026 WebCraft. Wszystkie prawa zastrzeżone.</div>
+      <div style="display: flex; gap: 20px">
+        <a href="#">Polityka prywatności</a><a href="#">Kontakt</a>
+      </div>
+    </footer>
+
+    <div
+      class="modal-overlay"
+      id="quoteModal"
+      onclick="closeModalOutside(event)"
+    >
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2>Bezpłatna wycena</h2>
+        <p class="modal-sub">
+          AI oszacuje koszt Twojego projektu w mniej niż 30 sekund. A ja w ciągu
+          24 godzin skontaktuję się z Tobą z finalną ofertą.
+        </p>
+        <div id="formStep">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Imię i nazwisko</label
+              ><input type="text" id="f-name" placeholder="Jan Kowalski" />
+            </div>
+            <div class="form-group">
+              <label>E-mail</label
+              ><input type="email" id="f-email" placeholder="jan@firma.pl" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telefon (opcjonalnie)</label
+            ><input type="tel" id="f-phone" placeholder="+48 600 000 000" />
+          </div>
+          <div class="form-group">
+            <label>Rodzaj strony</label>
+            <select id="f-type">
+              <option value="">Wybierz...</option>
+              <option value="landing">Landing Page</option>
+              <option value="firmowa">Strona Firmowa</option>
+              <option value="sklep">Sklep Internetowy</option>
+              <option value="redesign">Redesign istniejącej strony</option>
+              <option value="aplikacja">Aplikacja webowa</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Branża</label
+            ><input
+              type="text"
+              id="f-industry"
+              placeholder="np. usługi budowlane, kosmetyka..."
+            />
+          </div>
+          <div class="form-group">
+            <label>Dodatkowe funkcje</label>
+            <select id="f-features">
+              <option value="podstawowe">
+                Podstawowe (kontakt, o mnie, usługi)
+              </option>
+              <option value="srednie">Średnie (+ blog, galeria, mapa)</option>
+              <option value="zaawansowane">
+                Zaawansowane (+ rezerwacje, CRM, integracje)
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Opisz projekt (opcjonalnie)</label
+            ><textarea
+              id="f-desc"
+              rows="3"
+              placeholder="Kilka słów o projekcie, inspiracjach, oczekiwaniach..."
+            ></textarea>
+          </div>
+          <div class="ai-thinking" id="aiThinking">
+            <span
+              ><img src="photos/ai2.png" width="15" /> AI analizuje
+              projekt</span
+            >
+            <div class="dot-anim"><span></span><span></span><span></span></div>
+          </div>
+          <div class="quote-result" id="quoteResult">
+            <div class="quote-label">Szacowana wycena AI</div>
+            <div class="quote-price" id="quotePrice">—</div>
+            <div class="quote-breakdown" id="quoteBreakdown"></div>
+            <p
+              class="quote-note"
+              style="
+                margin-top: 12px;
+                font-size: 0.82rem;
+                color: rgba(240, 240, 240, 0.45);
+                line-height: 1.6;
+              "
+              id="quoteNote"
+            >
+              —
+            </p>
+          </div>
+          <button
+            class="btn-primary"
+            style="width: 100%; margin-top: 20px"
+            onclick="submitQuote()"
+            id="submitBtn"
+          >
+            Wyceń mój projekt ✦
+          </button>
+        </div>
+        <div
+          id="successStep"
+          style="display: none; text-align: center; padding: 20px 0"
+        >
+          <div style="font-size: 3rem; margin-bottom: 16px">
+            <img src="photos/succes.png" width="50" />
+          </div>
+          <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px">
+            Zapytanie wysłane!
+          </h3>
+          <p
+            style="
+              color: rgba(240, 240, 240, 0.5);
+              font-size: 0.9rem;
+              line-height: 1.7;
+            "
+          >
+            Wycena AI została przesłana. Skontaktuję się z Tobą w ciągu 24
+            godzin z finalną ofertą.
+          </p>
+          <button
+            class="btn-primary"
+            style="margin-top: 28px"
+            onclick="closeModal()"
+          >
+            Zamknij okno
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-bubble">
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+          <div class="chat-av"><img src="photos/ai.png" width="20" /></div>
+          <div class="chat-info">
+            <div class="name">WebCraft AI</div>
+            <div class="status">Online — odpowiada natychmiast</div>
+          </div>
+        </div>
+        <div class="chat-msgs" id="chatMsgs"></div>
+        <div class="chat-suggestions" id="chatSug">
+          <button
+            class="sug-btn"
+            onclick="sendSug('Ile kosztuje landing page?')"
+          >
+            <img src="photos/cash.png" width="10" /> Cena landing page
+          </button>
+          <button
+            class="sug-btn"
+            onclick="sendSug('Jak długo trwa realizacja?')"
+          >
+            <img src="photos/time.png" width="10" /> Czas realizacji
+          </button>
+          <button
+            class="sug-btn"
+            onclick="sendSug('Co obejmuje opieka po wdrożeniu?')"
+          >
+            <img src="photos/care.png" width="10" /> Opieka po wdrożeniu
+          </button>
+        </div>
+        <div class="chat-footer">
+          <input
+            class="chat-input"
+            id="chatInput"
+            placeholder="Napisz wiadomość..."
+            onkeydown="if (event.key === 'Enter') sendMsg();"
+          />
+          <button class="chat-send" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+      <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+        💬
+        <div class="chat-badge">1</div>
+      </button>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
