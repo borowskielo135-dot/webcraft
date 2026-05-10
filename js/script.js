@@ -1,7 +1,5 @@
 // ============ CONFIG ============
-const GROQ_KEY =
-  "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";
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+
 const MODEL = "llama-3.3-70b-versatile";
 
 async function groq(messages, max = 600) {
