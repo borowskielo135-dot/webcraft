@@ -3,15 +3,14 @@ const GROQ_KEY = "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";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = "llama-3.3-70b-versatile";
 
-async function groq(messages, max = 600) {
-  const r = await fetch(GROQ_URL, {
+async function groq(messages) {
+  // Zamiast do Groq, uderzamy do naszego pliku w folderze api
+  const r = await fetch("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + GROQ_KEY,
-    },
-    body: JSON.stringify({ model: MODEL, max_tokens: max, messages }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: messages }),
   });
+
   const d = await r.json();
   return d.choices[0].message.content;
 }
