@@ -17,14 +17,46 @@ async function groq(messages, max = 600) {
 
 // ============ MARQUEE ============
 const logos = [
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" },
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" },
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" },
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" },
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" },
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" },
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" },
-  { name: "Dopiero zaczynamy!", icon: `<img src="photos/logo.png" width="20" alt="">`, url: "#" }
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
+  {
+    name: "Dopiero zaczynamy!",
+    icon: `<img src="photos/logo.png" width="20" alt="">`,
+    url: "#",
+  },
 ];
 function buildMarquee() {
   const t = document.getElementById("marqueeTrack");
@@ -251,9 +283,7 @@ gsap.to("#heroGlow", {
 // NAV scroll
 window.addEventListener("scroll", () => {
   document.getElementById("nav").style.borderBottomColor =
-    window.scrollY > 50
-      ? "rgba(192,192,192,.14)"
-      : "rgba(192,192,192,.04)";
+    window.scrollY > 50 ? "rgba(192,192,192,.14)" : "rgba(192,192,192,.04)";
 });
 
 // ============ FAQ ============
@@ -288,8 +318,11 @@ async function submitQuote() {
   const industry = document.getElementById("f-industry").value.trim();
   const features = document.getElementById("f-features").value;
   const desc = document.getElementById("f-desc").value.trim();
+
   if (!name || !email || !type || !industry) {
-    alert("Proszę wypełnić wymagane pola.");
+    alert(
+      "Proszę wypełnić wymagane pola (Imię, Email, Rodzaj strony, Branża).",
+    );
     return;
   }
 
@@ -308,7 +341,7 @@ async function submitQuote() {
 Odpowiedz TYLKO JSON bez markdown:
 {"cena_min":number,"cena_max":number,"czas_realizacji":"X-Y dni","pozycje":[{"nazwa":"...","cena":"X–Y zł"}],"uwagi":"2 zdania po polsku dla klienta"}
 
-Widełki cenowe: landing 800-1800 zł, firmowa 1500-3500 zł, sklep 3000-7000 zł, redesign 1000-3000 zł, aplikacja 5000-15000 zł.`;
+Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł, redesign 500-1500 zł, aplikacja 5000-15000 zł.`;
 
   try {
     const raw = await groq([{ role: "user", content: prompt }]);
@@ -325,10 +358,10 @@ Widełki cenowe: landing 800-1800 zł, firmowa 1500-3500 zł, sklep 3000-7000 z�
     document.getElementById("quoteResult").classList.add("show");
   } catch (e) {
     const fb = {
-      landing: { min: 800, max: 1800, czas: "3–5 dni" },
-      firmowa: { min: 1500, max: 3500, czas: "7–14 dni" },
-      sklep: { min: 3000, max: 7000, czas: "14–28 dni" },
-      redesign: { min: 1000, max: 3000, czas: "5–10 dni" },
+      landing: { min: 300, max: 1000, czas: "3–5 dni" },
+      firmowa: { min: 700, max: 2500, czas: "7–14 dni" },
+      sklep: { min: 1500, max: 3000, czas: "14–28 dni" },
+      redesign: { min: 500, max: 1500, czas: "5–10 dni" },
       aplikacja: { min: 5000, max: 15000, czas: "30–60 dni" },
     };
     const f = fb[type] || fb.firmowa;
@@ -342,15 +375,52 @@ Widełki cenowe: landing 800-1800 zł, firmowa 1500-3500 zł, sklep 3000-7000 z�
 
   document.getElementById("aiThinking").classList.remove("show");
   btn.disabled = false;
-  btn.textContent = "Wyślij zapytanie →";
+  btn.textContent = "Wyślij zapytanie do agencji →";
+
+  // ZMIANA: To sprawia, że drugie kliknięcie wysyła dane do Ciebie
   btn.onclick = finalSubmit;
 }
 
-function finalSubmit() {
-  document.getElementById("formStep").style.display = "none";
-  document.getElementById("successStep").style.display = "block";
-}
+async function finalSubmit() {
+  const btn = document.getElementById("submitBtn");
 
+  const payload = {
+    klient: document.getElementById("f-name").value,
+    email: document.getElementById("f-email").value,
+    tel: document.getElementById("f-phone").value,
+    projekt: document.getElementById("f-type").value,
+    branza: document.getElementById("f-industry").value,
+    wycena_ai: document.getElementById("quotePrice").innerText,
+    opis: document.getElementById("f-desc").value,
+  };
+
+  btn.innerText = "Zapisywanie...";
+  btn.disabled = true;
+
+  try {
+    // TUTAJ WKLEJ LINK Z FORMSPREE (np. https://formspree.io/f/xyzkjwd)
+    const res = await fetch("https://formspree.io/f/xgodpnjk", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (res.ok) {
+      document.getElementById("formStep").style.display = "none";
+      document.getElementById("successStep").style.display = "block";
+    } else {
+      alert("Błąd. Spróbuj ponownie.");
+    }
+  } catch (err) {
+    alert("Błąd połączenia.");
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "Wyślij zapytanie →";
+  }
+}
 // ============ CHAT ============
 let chatOpen = false,
   chatHistory = [];
@@ -358,9 +428,7 @@ const SYS = `Jesteś przyjaznym asystentem agencji webowej WebCraft. Odpowiadasz
 
 function toggleChat() {
   chatOpen = !chatOpen;
-  document
-    .getElementById("chatWindow")
-    .classList.toggle("open", chatOpen);
+  document.getElementById("chatWindow").classList.toggle("open", chatOpen);
   const badge = document
     .getElementById("chatToggle")
     .querySelector(".chat-badge");
@@ -433,8 +501,6 @@ async function sendMsg() {
     if (chatHistory.length > 14) chatHistory = chatHistory.slice(-14);
   } catch (e) {
     removeTyping();
-    addBot(
-      "Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie! 📩",
-    );
+    addBot("Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie! 📩");
   }
 }
