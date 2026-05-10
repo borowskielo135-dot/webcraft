@@ -3,15 +3,22 @@
 const MODEL = "llama-3.3-70b-versatile";
 
 async function groq(messages, max = 600) {
-  const r = await fetch(GROQ_URL, {
+  // ZMIANA: Kierujemy zapytanie do Twojego pliku w folderze api
+  // Jeśli plik nazywa się chat-api.js, to wpisz "/api/chat-api"
+  // Jeśli zmieniłeś nazwę na chat.js, to wpisz "/api/chat"
+  const r = await fetch("/api/chat-api", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + GROQ_KEY,
     },
-    body: JSON.stringify({ model: MODEL, max_tokens: max, messages }),
+    body: JSON.stringify({ messages }), // Tu nie podajesz klucza! Klucz jest bezpieczny na Vercelu.
   });
+
   const d = await r.json();
+  if (d.error) {
+    console.error("Błąd AI:", d.error);
+    throw new Error(d.error);
+  }
   return d.choices[0].message.content;
 }
 
