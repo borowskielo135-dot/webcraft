@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebCraft | Płatność</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="photos/logo.png" />
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <style>
+      .payment-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .payment-box {
+        background: #0d0d12;
+        border: 1px solid rgba(124, 58, 237, 0.3);
+        border-radius: 20px;
+        padding: 48px 44px;
+        width: 100%;
+        max-width: 540px;
+        box-shadow: 0 0 80px rgba(124, 58, 237, 0.18);
+      }
+      .payment-logo {
+        font-size: 1.4rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff, rgba(192, 192, 192, 1));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 28px;
+        text-align: center;
+      }
+      .payment-logo span {
+        -webkit-text-fill-color: #a855f7;
+      }
+      .payment-amount {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+      .payment-amount .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: rgba(240, 240, 240, 0.4);
+        margin-bottom: 8px;
+      }
+      .payment-amount .price {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #fff, #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -2px;
+      }
+      .payment-amount .order-id {
+        font-size: 0.78rem;
+        color: rgba(240, 240, 240, 0.3);
+        margin-top: 6px;
+      }
+      .payment-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+      .pay-method {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 20px;
+        border: 1px solid rgba(192, 192, 192, 0.12);
+        border-radius: 12px;
+        background: rgba(192, 192, 192, 0.03);
+        cursor: pointer;
+        transition: all 0.3s;
+        user-select: none;
+      }
+      .pay-method:hover,
+      .pay-method.selected {
+        border-color: rgba(124, 58, 237, 0.45);
+        background: rgba(124, 58, 237, 0.08);
+      }
+      .pay-method input[type="radio"] {
+        accent-color: #a855f7;
+        width: 18px;
+        height: 18px;
+      }
+      .pay-method-name {
+        font-weight: 600;
+        font-size: 0.92rem;
+      }
+      .pay-method-desc {
+        font-size: 0.78rem;
+        color: rgba(240, 240, 240, 0.4);
+        margin-top: 2px;
+      }
+      .pay-method-icon {
+        font-size: 1.8rem;
+      }
+      .pay-notice {
+        background: rgba(124, 58, 237, 0.08);
+        border: 1px solid rgba(124, 58, 237, 0.2);
+        border-radius: 10px;
+        padding: 14px 18px;
+        font-size: 0.83rem;
+        color: rgba(240, 240, 240, 0.55);
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+      .pay-notice strong {
+        color: #a855f7;
+      }
+      .pay-secure {
+        text-align: center;
+        font-size: 0.75rem;
+        color: rgba(240, 240, 240, 0.25);
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+      @media (max-width: 540px) {
+        .payment-box {
+          padding: 28px 18px;
+        }
+        .payment-amount .price {
+          font-size: 2.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav id="nav">
+      <div class="logo">Web<span>Craft</span></div>
+      <div class="panel-nav-right">
+        <a
+          href="panel.html"
+          style="
+            color: rgba(240, 240, 240, 0.5);
+            text-decoration: none;
+            font-size: 0.88rem;
+          "
+          >← Wróć do panelu</a
+        >
+      </div>
+    </nav>
+
+    <div class="payment-page">
+      <div class="payment-box">
+        <div class="payment-logo">Web<span>Craft</span> | Płatność</div>
+
+        <div class="payment-amount">
+          <div class="label">Kwota do zapłaty</div>
+          <div class="price" id="displayPrice">—</div>
+          <div class="order-id" id="displayOrder"></div>
+        </div>
+
+        <div class="payment-methods">
+          <label class="pay-method selected">
+            <input type="radio" name="method" value="payu" checked />
+            <div class="pay-method-icon">🏦</div>
+            <div>
+              <div class="pay-method-name">PayU</div>
+              <div class="pay-method-desc">Przelew online, BLIK, karta</div>
+            </div>
+          </label>
+          <label class="pay-method">
+            <input type="radio" name="method" value="blik" />
+            <div class="pay-method-icon">📱</div>
+            <div>
+              <div class="pay-method-name">BLIK</div>
+              <div class="pay-method-desc">Szybka płatność kodem BLIK</div>
+            </div>
+          </label>
+          <label class="pay-method">
+            <input type="radio" name="method" value="transfer" />
+            <div class="pay-method-icon">🏧</div>
+            <div>
+              <div class="pay-method-name">Przelew tradycyjny</div>
+              <div class="pay-method-desc">Dane do przelewu na e-mail</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="pay-notice" id="payNotice">
+          <strong>⚙️ Integracja PayU w przygotowaniu.</strong><br />
+          Klikając "Przejdź do płatności" wyślemy do Ciebie e-mail z linkiem
+          płatności PayU lub danymi do przelewu. Realizacja projektu startuje po
+          potwierdzeniu wpłaty.
+        </div>
+
+        <button
+          class="btn-primary"
+          style="width: 100%; font-size: 1rem; padding: 16px"
+          id="payBtn"
+        >
+          💳 Przejdź do płatności →
+        </button>
+        <div class="pay-secure">🔒 Bezpieczna płatność · SSL</div>
+
+        <!-- Stan po kliknięciu -->
+        <div
+          id="paySuccess"
+          style="display: none; text-align: center; padding: 20px 0"
+        >
+          <div style="font-size: 3rem; margin-bottom: 14px">📧</div>
+          <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px">
+            Żądanie wysłane!
+          </h3>
+          <p
+            style="
+              color: rgba(240, 240, 240, 0.5);
+              font-size: 0.9rem;
+              line-height: 1.7;
+            "
+          >
+            Skontaktujemy się z Tobą w ciągu kilku minut z linkiem do płatności
+            PayU lub danymi do przelewu.
+          </p>
+          <a href="panel.html">
+            <button class="btn-primary" style="margin-top: 20px">
+              📋 Wróć do panelu
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/orders.js"></script>
+    <script>
+      // Pobierz parametry z URL
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get("order") || "";
+      const price = params.get("price") || "—";
+
+      document.getElementById("displayPrice").textContent = price;
+      document.getElementById("displayOrder").textContent = orderId
+        ? `Zamówienie #${orderId.slice(-6).toUpperCase()}`
+        : "";
+
+      // Highlight wybranej metody
+      document.querySelectorAll(".pay-method").forEach((el) => {
+        el.addEventListener("click", () => {
+          document
+            .querySelectorAll(".pay-method")
+            .forEach((m) => m.classList.remove("selected"));
+          el.classList.add("selected");
+          const method = el.querySelector("input").value;
+          const notice = document.getElementById("payNotice");
+          if (method === "transfer") {
+            notice.innerHTML = `<strong>🏧 Przelew tradycyjny</strong><br/>
+          Po kliknięciu wyślemy Ci dane do przelewu:<br/>
+          Bank: mBank · Nr konta: <strong>00 0000 0000 0000 0000 0000 0000</strong><br/>
+          Tytuł: <strong>WebCraft #${orderId.slice(-6).toUpperCase()}</strong>`;
+          } else {
+            notice.innerHTML = `<strong>⚙️ Integracja PayU w przygotowaniu.</strong><br/>
+          Klikając "Przejdź do płatności" wyślemy do Ciebie e-mail z linkiem
+          płatności PayU lub danymi do przelewu.`;
+          }
+        });
+      });
+
+      document.getElementById("payBtn").addEventListener("click", async () => {
+        const method =
+          document.querySelector('input[name="method"]:checked')?.value ||
+          "payu";
+        const btn = document.getElementById("payBtn");
+        btn.disabled = true;
+        btn.textContent = "Wysyłanie...";
+
+        // TODO: tu podepnij PayU API / redirect
+        // Przykład: window.location.href = `https://secure.payu.com/...`;
+
+        // Na razie wysyłamy info przez Formspree
+        try {
+          await fetch("https://formspree.io/f/xgodpnjk", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({
+              typ: "PŁATNOŚĆ",
+              orderId,
+              price,
+              method,
+              user: auth.currentUser?.email || "—",
+            }),
+          });
+        } catch {}
+
+        // Zaktualizuj status w Firestore na ACCEPTED (czeka na potwierdzenie wpłaty)
+        try {
+          if (orderId)
+            await updateOrder(orderId, {
+              status: "ACCEPTED",
+              paymentMethod: method,
+            });
+        } catch {}
+
+        document.getElementById("payBtn").style.display = "none";
+        document.getElementById("payNotice").style.display = "none";
+        document.querySelector(".payment-methods").style.display = "none";
+        document.getElementById("paySuccess").style.display = "block";
+      });
+    </script>
+  </body>
+</html>
