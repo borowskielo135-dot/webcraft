@@ -17,14 +17,14 @@ async function groq(messages, max = 600) {
 
 // ============ MARQUEE ============
 const logos = [
-  { name: "TechFlow", icon: "🚀", url: "#" },
-  { name: "NovaBuild", icon: "🏗️", url: "#" },
-  { name: "GreenMed", icon: "🌿", url: "#" },
-  { name: "UrbanFit", icon: "💪", url: "#" },
-  { name: "LuxDecor", icon: "✨", url: "#" },
-  { name: "SwiftCargo", icon: "📦", url: "#" },
-  { name: "PrimeLaw", icon: "⚖️", url: "#" },
-  { name: "ArtStudio", icon: "🎨", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "<img src="photos/logo.png" width="20"  alt="">", url: "#" },
 ];
 function buildMarquee() {
   const t = document.getElementById("marqueeTrack");
