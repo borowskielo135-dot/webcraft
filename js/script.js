@@ -22,6 +22,11 @@ async function groq(messages, max = 600) {
   return d.choices[0].message.content;
 }
 
+// Dodaj na górze script.js (po CONFIG):
+import { auth } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { createOrder } from "./orders.js";
+
 // ============ MARQUEE ============
 const logos = [
   {
@@ -390,39 +395,70 @@ Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł
 
 async function finalSubmit() {
   const btn = document.getElementById("submitBtn");
-
-  const payload = {
-    klient: document.getElementById("f-name").value,
-    email: document.getElementById("f-email").value,
-    tel: document.getElementById("f-phone").value,
-    projekt: document.getElementById("f-type").value,
-    branza: document.getElementById("f-industry").value,
-    wycena_ai: document.getElementById("quotePrice").innerText,
-    opis: document.getElementById("f-desc").value,
-  };
-
   btn.innerText = "Zapisywanie...";
   btn.disabled = true;
 
-  try {
-    // TUTAJ WKLEJ LINK Z FORMSPREE (np. https://formspree.io/f/xyzkjwd)
-    const res = await fetch("https://formspree.io/f/xgodpnjk", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+  const user = auth.currentUser;
 
-    if (res.ok) {
-      document.getElementById("formStep").style.display = "none";
-      document.getElementById("successStep").style.display = "block";
+  const formData = {
+    projekt: document.getElementById("f-type").value,
+    branza: document.getElementById("f-industry").value,
+    features: document.getElementById("f-features").value,
+    opis: document.getElementById("f-desc").value,
+  };
+  const aiQuote = document.getElementById("quotePrice").innerText;
+
+  try {
+    if (user) {
+      // Zalogowany — zapis do Firestore
+      await createOrder(
+        user.uid,
+        user.displayName || document.getElementById("f-name").value,
+        user.email,
+        formData,
+        aiQuote,
+      );
     } else {
-      alert("Błąd. Spróbuj ponownie.");
+      // Niezalogowany — fallback do Formspree jak wcześniej
+      const payload = {
+        klient: document.getElementById("f-name").value,
+        email: document.getElementById("f-email").value,
+        tel: document.getElementById("f-phone").value,
+        ...formData,
+        wycena_ai: aiQuote,
+      };
+      const res = await fetch("https://formspree.io/f/xgodpnjk", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Formspree error");
     }
+
+    document.getElementById("formStep").style.display = "none";
+    document.getElementById("successStep").innerHTML = `
+      <div style="font-size:3rem;margin-bottom:16px"><img src="photos/succes.png" width="50"/></div>
+      <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:10px">Zapytanie wysłane!</h3>
+      <p style="color:rgba(240,240,240,.5);font-size:.9rem;line-height:1.7">
+        Wycena AI została przesłana. Skontaktuję się z Tobą w ciągu 24h z finalną ofertą.
+      </p>
+      ${
+        user
+          ? `<a href="panel.html"><button class="btn-primary" style="margin-top:20px">📋 Przejdź do swojego panelu →</button></a>`
+          : `
+      <p style="margin-top:16px;font-size:.82rem;color:rgba(240,240,240,.35)">
+        💡 <a href="panel.html" style="color:var(--pl)">Załóż konto</a> aby śledzić status swojego zamówienia.
+      </p>`
+      }
+      <br/>
+      <button class="btn-primary" style="margin-top:12px;background:transparent;border:1px solid rgba(192,192,192,.2)" onclick="closeModal()">Zamknij okno</button>
+    `;
+    document.getElementById("successStep").style.display = "block";
   } catch (err) {
-    alert("Błąd połączenia.");
+    alert("Błąd połączenia. Spróbuj ponownie.");
   } finally {
     btn.disabled = false;
     btn.innerText = "Wyślij zapytanie →";
