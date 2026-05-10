@@ -1,0 +1,489 @@
+// ============================================================
+// js/script.js  —  BEZ "type=module", wszystko globalne
+// ============================================================
+
+// ============ MARQUEE ============
+const logos = [
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+];
+
+function buildMarquee() {
+  const t = document.getElementById("marqueeTrack");
+  if (!t) return;
+  const all = [...logos, ...logos];
+  t.innerHTML = all
+    .map(
+      (l) => `
+    <div class="marquee-item" onclick="window.open('${l.url}','_blank')">
+      <div class="marquee-logo">
+        <div class="marquee-logo-icon">${l.icon}</div>
+        <div class="marquee-logo-name">${l.name}</div>
+      </div>
+    </div>`,
+    )
+    .join("");
+}
+buildMarquee();
+
+// ============ GSAP ANIMATIONS ============
+gsap.registerPlugin(ScrollTrigger);
+
+function trySplit(el) {
+  try {
+    return new SplitText(el, { type: "chars,words" });
+  } catch (e) {
+    return null;
+  }
+}
+
+gsap.to("#logo", { opacity: 1, duration: 0.6, delay: 0.2 });
+gsap.to("#navCta", { opacity: 1, duration: 0.6, delay: 0.4 });
+gsap.to("#heroGlow", { opacity: 1, duration: 1.5, delay: 0.1 });
+gsap.to("#badge", { opacity: 1, y: 0, duration: 0.7, delay: 0.3 });
+
+window.addEventListener("load", () => {
+  const st = trySplit("#heroTitle");
+  if (st) {
+    gsap.from(st.chars, {
+      opacity: 0,
+      y: 40,
+      stagger: 0.018,
+      duration: 0.6,
+      delay: 0.5,
+      ease: "power3.out",
+    });
+  } else {
+    document
+      .querySelectorAll("#heroTitle .tl")
+      .forEach((el) => (el.style.opacity = "0"));
+    gsap.to("#heroTitle .tl", {
+      opacity: 1,
+      y: 0,
+      stagger: 0.15,
+      duration: 0.8,
+      delay: 0.5,
+      ease: "power3.out",
+    });
+  }
+});
+
+gsap.to("#heroSub", {
+  opacity: 1,
+  duration: 0.8,
+  delay: 1,
+  ease: "power2.out",
+});
+gsap.to("#heroBtns", { opacity: 1, duration: 0.7, delay: 1.2 });
+gsap.to("#scrollLine", { opacity: 1, duration: 0.6, delay: 1.6 });
+gsap.to("#scrollLine .scroll-line-bar", {
+  scaleY: 0,
+  transformOrigin: "top",
+  duration: 1,
+  delay: 1.8,
+  repeat: -1,
+  yoyo: true,
+  ease: "sine.inOut",
+});
+
+gsap.from("#statsBar .stat", {
+  opacity: 0,
+  y: 30,
+  stagger: 0.12,
+  duration: 0.6,
+  scrollTrigger: { trigger: "#statsBar", start: "top 85%" },
+});
+
+ScrollTrigger.create({
+  trigger: "#statsBar",
+  start: "top 80%",
+  once: true,
+  onEnter() {
+    document.querySelectorAll(".stat-num").forEach((el) => {
+      const t = +el.dataset.target,
+        suf = el.dataset.suffix;
+      let c = 0;
+      const step = Math.ceil(t / 55);
+      const tm = setInterval(() => {
+        c = Math.min(c + step, t);
+        el.textContent = c + suf;
+        if (c >= t) clearInterval(tm);
+      }, 22);
+    });
+  },
+});
+
+document.querySelectorAll(".split-title").forEach((el) => {
+  const st = trySplit(el);
+  if (st)
+    gsap.from(st.chars, {
+      opacity: 0,
+      y: 30,
+      stagger: 0.02,
+      duration: 0.5,
+      ease: "power2.out",
+      scrollTrigger: { trigger: el, start: "top 88%", once: true },
+    });
+});
+
+gsap.utils.toArray(".service-card").forEach((card, i) => {
+  gsap.to(card, {
+    opacity: 1,
+    y: 0,
+    duration: 0.65,
+    ease: "power2.out",
+    scrollTrigger: { trigger: card, start: "top 88%", once: true },
+    delay: (i % 3) * 0.1,
+  });
+});
+
+gsap.utils.toArray(".process-step").forEach((step, i) => {
+  gsap.to(step, {
+    opacity: 1,
+    y: 0,
+    duration: 0.6,
+    ease: "power2.out",
+    scrollTrigger: { trigger: step, start: "top 88%", once: true },
+    delay: i * 0.12,
+  });
+});
+
+gsap.utils.toArray(".num-block").forEach((b, i) => {
+  gsap.to(b, {
+    opacity: 1,
+    duration: 0.6,
+    y: 0,
+    ease: "power2.out",
+    scrollTrigger: { trigger: b, start: "top 88%", once: true },
+    delay: i * 0.1,
+  });
+});
+
+gsap.utils.toArray(".review-card").forEach((card, i) => {
+  gsap.to(card, {
+    opacity: 1,
+    y: 0,
+    duration: 0.65,
+    ease: "power2.out",
+    scrollTrigger: { trigger: card, start: "top 88%", once: true },
+    delay: i * 0.12,
+  });
+});
+
+gsap.utils.toArray(".faq-item").forEach((item, i) => {
+  gsap.to(item, {
+    opacity: 1,
+    x: 0,
+    duration: 0.55,
+    ease: "power2.out",
+    scrollTrigger: { trigger: item, start: "top 90%", once: true },
+    delay: i * 0.07,
+  });
+});
+
+ScrollTrigger.create({
+  trigger: "#ctaTitle",
+  start: "top 85%",
+  once: true,
+  onEnter() {
+    const st = trySplit("#ctaTitle");
+    if (st)
+      gsap.from(st.chars, {
+        opacity: 0,
+        y: 25,
+        stagger: 0.025,
+        duration: 0.5,
+        ease: "power2.out",
+      });
+  },
+});
+
+gsap.to("#heroGlow", {
+  y: -80,
+  ease: "none",
+  scrollTrigger: {
+    trigger: ".hero",
+    start: "top top",
+    end: "bottom top",
+    scrub: true,
+  },
+});
+
+window.addEventListener("scroll", () => {
+  document.getElementById("nav").style.borderBottomColor =
+    window.scrollY > 50 ? "rgba(192,192,192,.14)" : "rgba(192,192,192,.04)";
+});
+
+// ============ FAQ ============
+document.querySelectorAll(".faq-q").forEach((q) => {
+  q.addEventListener("click", () => {
+    const item = q.parentElement,
+      isOpen = item.classList.contains("open");
+    document
+      .querySelectorAll(".faq-item")
+      .forEach((i) => i.classList.remove("open"));
+    if (!isOpen) item.classList.add("open");
+  });
+});
+
+// ============ MODAL ============
+function openModal() {
+  document.getElementById("quoteModal").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closeModal() {
+  document.getElementById("quoteModal").classList.remove("open");
+  document.body.style.overflow = "";
+  // reset po zamknięciu
+  document.getElementById("formStep").style.display = "block";
+  document.getElementById("successStep").style.display = "none";
+  document.getElementById("submitBtn").textContent = "Wyceń mój projekt ✦";
+  document.getElementById("submitBtn").disabled = false;
+  document.getElementById("quoteResult").classList.remove("show");
+}
+
+document.getElementById("navCta").addEventListener("click", openModal);
+document.getElementById("heroQuoteBtn").addEventListener("click", openModal);
+document.getElementById("ctaQuoteBtn").addEventListener("click", openModal);
+document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+document
+  .getElementById("modalCloseFinalBtn")
+  .addEventListener("click", closeModal);
+
+// klik poza modalem
+document.getElementById("quoteModal").addEventListener("click", function (e) {
+  if (e.target === this) closeModal();
+});
+
+// ============ WYCENA AI ============
+let quoteData = null;
+
+document.getElementById("submitBtn").addEventListener("click", function () {
+  if (this.dataset.step === "send") {
+    finalSubmit();
+  } else {
+    submitQuote();
+  }
+});
+
+async function submitQuote() {
+  const name = document.getElementById("f-name").value.trim();
+  const email = document.getElementById("f-email").value.trim();
+  const type = document.getElementById("f-type").value;
+  const industry = document.getElementById("f-industry").value.trim();
+  const features = document.getElementById("f-features").value;
+  const desc = document.getElementById("f-desc").value.trim();
+
+  if (!name || !email || !type || !industry) {
+    alert(
+      "Proszę wypełnić wymagane pola (Imię, Email, Rodzaj strony, Branża).",
+    );
+    return;
+  }
+
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "Analizuję...";
+  document.getElementById("aiThinking").classList.add("show");
+  document.getElementById("quoteResult").classList.remove("show");
+
+  const prompt = `Jesteś asystentem agencji webowej WebCraft z Polski. Klient złożył zapytanie:
+- Rodzaj strony: ${type}
+- Branża: ${industry}
+- Pakiet funkcji: ${features}
+- Opis: ${desc || "brak"}
+
+Odpowiedz TYLKO JSON bez markdown:
+{"cena_min":number,"cena_max":number,"czas_realizacji":"X-Y dni","pozycje":[{"nazwa":"...","cena":"X–Y zł"}],"uwagi":"2 zdania po polsku dla klienta"}
+
+Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł, redesign 500-1500 zł, aplikacja 5000-15000 zł.`;
+
+  try {
+    const r = await fetch("/api/chat-api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "user", content: prompt }] }),
+    });
+    const d = await r.json();
+    const raw = d.choices[0].message.content;
+    const json = JSON.parse(raw.replace(/```json|```/g, "").trim());
+
+    document.getElementById("quotePrice").textContent =
+      `${json.cena_min.toLocaleString("pl-PL")} – ${json.cena_max.toLocaleString("pl-PL")} zł`;
+    document.getElementById("quoteNote").textContent =
+      `⏱ ${json.czas_realizacji} • ${json.uwagi}`;
+    let bd = "";
+    (json.pozycje || []).forEach((p) => {
+      bd += `<div class="quote-item"><span>${p.nazwa}</span><span>${p.cena}</span></div>`;
+    });
+    document.getElementById("quoteBreakdown").innerHTML = bd;
+    quoteData = json;
+  } catch (e) {
+    const fb = {
+      landing: { min: 300, max: 1000, czas: "3–5 dni" },
+      firmowa: { min: 700, max: 2500, czas: "7–14 dni" },
+      sklep: { min: 1500, max: 3000, czas: "14–28 dni" },
+      redesign: { min: 500, max: 1500, czas: "5–10 dni" },
+      aplikacja: { min: 5000, max: 15000, czas: "30–60 dni" },
+    };
+    const f = fb[type] || fb.firmowa;
+    document.getElementById("quotePrice").textContent =
+      `${f.min.toLocaleString("pl-PL")} – ${f.max.toLocaleString("pl-PL")} zł`;
+    document.getElementById("quoteNote").textContent =
+      `⏱ Czas realizacji: ${f.czas} • Skontaktuję się z Tobą w ciągu 24h z finalną ofertą.`;
+    document.getElementById("quoteBreakdown").innerHTML = "";
+    quoteData = f;
+  }
+
+  document.getElementById("aiThinking").classList.remove("show");
+  document.getElementById("quoteResult").classList.add("show");
+
+  btn.disabled = false;
+  btn.textContent = "Wyślij zapytanie do agencji →";
+  btn.dataset.step = "send";
+}
+
+async function finalSubmit() {
+  const btn = document.getElementById("submitBtn");
+  btn.textContent = "Wysyłanie...";
+  btn.disabled = true;
+
+  const payload = {
+    klient: document.getElementById("f-name").value.trim(),
+    email: document.getElementById("f-email").value.trim(),
+    tel: document.getElementById("f-phone").value.trim(),
+    projekt: document.getElementById("f-type").value,
+    branza: document.getElementById("f-industry").value.trim(),
+    features: document.getElementById("f-features").value,
+    opis: document.getElementById("f-desc").value.trim(),
+    wycena_ai: document.getElementById("quotePrice").textContent,
+  };
+
+  // Sprawdź czy zalogowany przez Firebase
+  // (Firebase SDK ładujemy przez CDN w panel.html, tu robimy prosty fallback)
+  try {
+    const res = await fetch("https://formspree.io/f/xgodpnjk", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Błąd wysyłania");
+  } catch (e) {
+    console.warn("Formspree error:", e);
+  }
+
+  document.getElementById("formStep").style.display = "none";
+  document.getElementById("successStep").style.display = "block";
+  btn.disabled = false;
+  delete btn.dataset.step;
+}
+
+// ============ SCROLL btn ============
+document.getElementById("heroScrollBtn").addEventListener("click", () => {
+  document.getElementById("opinie").scrollIntoView({ behavior: "smooth" });
+});
+
+// ============ CHAT ============
+let chatOpen = false;
+let chatHistory = [];
+const CHAT_SYS = `Jesteś przyjaznym asystentem agencji webowej WebCraft. Odpowiadasz po polsku, krótko (max 3-4 zdania). Ceny: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł. Czas: landing 3-5 dni, firmowa 7-14 dni, sklep 14-28 dni. Jeśli ktoś pyta o wycenę — zachęć do formularza.`;
+
+document.getElementById("chatToggle").addEventListener("click", toggleChat);
+document.getElementById("chatSendBtn").addEventListener("click", sendMsg);
+document.getElementById("chatInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendMsg();
+});
+document.querySelectorAll(".sug-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.getElementById("chatInput").value = btn.dataset.msg;
+    sendMsg();
+  });
+});
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  document.getElementById("chatWindow").classList.toggle("open", chatOpen);
+  const badge = document.querySelector(".chat-badge");
+  if (badge) badge.style.display = "none";
+  document.getElementById("chatToggle").innerHTML = chatOpen
+    ? "✕"
+    : '💬<div class="chat-badge" style="display:none">1</div>';
+
+  if (chatOpen && !document.getElementById("chatMsgs").children.length) {
+    setTimeout(
+      () =>
+        addBot(
+          "Cześć! 👋 Jestem asystentem WebCraft. Chętnie odpowiem na pytania o strony internetowe lub pomogę oszacować koszt projektu. W czym mogę pomóc?",
+        ),
+      300,
+    );
+  }
+}
+
+function addBot(t) {
+  const m = document.getElementById("chatMsgs");
+  const d = document.createElement("div");
+  d.className = "msg bot";
+  d.textContent = t;
+  m.appendChild(d);
+  m.scrollTop = m.scrollHeight;
+}
+function addUser(t) {
+  const m = document.getElementById("chatMsgs");
+  const d = document.createElement("div");
+  d.className = "msg user";
+  d.textContent = t;
+  m.appendChild(d);
+  m.scrollTop = m.scrollHeight;
+  document.getElementById("chatSug").style.display = "none";
+}
+function addTyping() {
+  const m = document.getElementById("chatMsgs");
+  const d = document.createElement("div");
+  d.className = "msg bot msg-typing";
+  d.id = "typing";
+  d.innerHTML =
+    '<div class="dot-anim"><span></span><span></span><span></span></div>';
+  m.appendChild(d);
+  m.scrollTop = m.scrollHeight;
+}
+function removeTyping() {
+  const t = document.getElementById("typing");
+  if (t) t.remove();
+}
+
+async function sendMsg() {
+  const inp = document.getElementById("chatInput");
+  const t = inp.value.trim();
+  if (!t) return;
+  inp.value = "";
+  addUser(t);
+  chatHistory.push({ role: "user", content: t });
+  addTyping();
+  try {
+    const msgs = [{ role: "system", content: CHAT_SYS }, ...chatHistory];
+    const r = await fetch("/api/chat-api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: msgs }),
+    });
+    const d = await r.json();
+    const reply = d.choices[0].message.content;
+    removeTyping();
+    addBot(reply);
+    chatHistory.push({ role: "assistant", content: reply });
+    if (chatHistory.length > 14) chatHistory = chatHistory.slice(-14);
+  } catch (e) {
+    removeTyping();
+    addBot("Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie! 📩");
+  }
+}
