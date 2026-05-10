@@ -6,8 +6,6 @@
     <title>WebCraft | Panel</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/png" href="photos/logo.png" />
-
-    <!-- Firebase SDK przez CDN (nie jako moduł) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -91,11 +89,13 @@
         <div class="logo">Web<span>Craft</span></div>
         <div class="panel-nav-right">
           <span id="userGreet"></span>
-          <button class="nav-cta" id="logoutBtn">Wyloguj →</button>
+          <button class="nav-cta" style="opacity: 1" id="logoutBtn">
+            Wyloguj →
+          </button>
         </div>
       </nav>
 
-      <!-- CLIENT -->
+      <!-- CLIENT PANEL -->
       <div id="clientPanel" style="display: none">
         <div class="panel-wrap">
           <div class="panel-header">
@@ -117,18 +117,28 @@
         </div>
       </div>
 
-      <!-- ADMIN -->
+      <!-- ADMIN PANEL -->
       <div id="adminPanel" style="display: none">
         <div class="panel-wrap">
           <div class="panel-header">
             <div class="admin-badge">🛡️ Panel Administratora</div>
-            <h1>Zarządzanie zamówieniami</h1>
+            <h1>Zarządzanie WebCraft</h1>
             <p class="section-sub">
-              Pełna kontrola nad wszystkimi zamówieniami WebCraft.
+              Pełna kontrola nad zamówieniami i użytkownikami.
             </p>
           </div>
+
+          <!-- Zakładki: Zamówienia / Użytkownicy -->
+          <div
+            id="adminTabBar"
+            style="display: flex; gap: 8px; margin-bottom: 24px"
+          ></div>
+
+          <!-- Statystyki (zamówienia) -->
           <div class="admin-stats" id="adminStats"></div>
-          <div class="admin-filters">
+
+          <!-- Filtry zamówień -->
+          <div class="admin-filters" id="adminFilters">
             <button class="filter-btn active" data-filter="ALL">
               Wszystkie
             </button>
@@ -149,8 +159,10 @@
               ❌ Odrzucone
             </button>
           </div>
+
+          <!-- Lista zamówień / użytkowników (wspólny kontener) -->
           <div id="adminOrders" class="orders-list">
-            <div class="loading-spinner">Ładowanie zamówień...</div>
+            <div class="loading-spinner">Ładowanie...</div>
           </div>
         </div>
       </div>
@@ -161,6 +173,10 @@
       <div class="modal" id="orderModalContent"></div>
     </div>
 
+    <!-- SCRIPTS — kolejność ma znaczenie! -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/orders.js"></script>
     <script src="js/panel.js"></script>
   </body>
 </html>
