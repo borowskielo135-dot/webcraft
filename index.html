@@ -11,7 +11,6 @@
     <link rel="icon" type="image/png" href="photos/logo.png" />
   </head>
   <body>
-    
     <nav id="nav">
       <div class="logo" id="logo">Web<span>Craft</span></div>
       <ul class="nav-links">
@@ -20,9 +19,12 @@
         <li><a href="#opinie">Opinie</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ul>
-      <button class="nav-cta" id="navCta" onclick="openModal()">
-        Darmowa wycena →
-      </button>
+      <div class="nav-right">
+        <a href="panel.html" class="nav-panel-btn" id="navPanelBtn">Panel →</a>
+        <button class="nav-cta" id="navCta" onclick="openModal()">
+          Darmowa wycena →
+        </button>
+      </div>
     </nav>
 
     <div class="hero" id="hero">
@@ -410,6 +412,7 @@
       </div>
     </footer>
 
+    <!-- MODAL WYCENY -->
     <div
       class="modal-overlay"
       id="quoteModal"
@@ -419,9 +422,13 @@
         <button class="modal-close" onclick="closeModal()">✕</button>
         <h2>Bezpłatna wycena</h2>
         <p class="modal-sub">
-          AI oszacuje koszt Twojego projektu w mniej niż 30 sekund. A ja w ciągu
-          24 godzin skontaktuję się z Tobą z finalną ofertą.
+          AI oszacuje koszt Twojego projektu w mniej niż 30 sekund. Skontaktuję
+          się z Tobą w ciągu 24h z finalną ofertą.
         </p>
+
+        <!-- INFO o koncie -->
+        <div class="modal-account-info" id="modalAccountInfo"></div>
+
         <div id="formStep">
           <div class="form-row">
             <div class="form-group">
@@ -476,6 +483,7 @@
               placeholder="Kilka słów o projekcie, inspiracjach, oczekiwaniach..."
             ></textarea>
           </div>
+
           <div class="ai-thinking" id="aiThinking">
             <span
               ><img src="photos/ai2.png" width="15" /> AI analizuje
@@ -487,18 +495,7 @@
             <div class="quote-label">Szacowana wycena AI</div>
             <div class="quote-price" id="quotePrice">—</div>
             <div class="quote-breakdown" id="quoteBreakdown"></div>
-            <p
-              class="quote-note"
-              style="
-                margin-top: 12px;
-                font-size: 0.82rem;
-                color: rgba(240, 240, 240, 0.45);
-                line-height: 1.6;
-              "
-              id="quoteNote"
-            >
-              —
-            </p>
+            <p class="quote-note" id="quoteNote">—</p>
           </div>
           <button
             class="btn-primary"
@@ -509,6 +506,7 @@
             Wyceń mój projekt ✦
           </button>
         </div>
+
         <div
           id="successStep"
           style="display: none; text-align: center; padding: 20px 0"
@@ -529,9 +527,14 @@
             Wycena AI została przesłana. Skontaktuję się z Tobą w ciągu 24
             godzin z finalną ofertą.
           </p>
+          <div id="successActions" style="margin-top: 20px"></div>
           <button
             class="btn-primary"
-            style="margin-top: 28px"
+            style="
+              margin-top: 12px;
+              background: transparent;
+              border: 1px solid rgba(192, 192, 192, 0.2);
+            "
             onclick="closeModal()"
           >
             Zamknij okno
@@ -540,6 +543,7 @@
       </div>
     </div>
 
+    <!-- CHAT -->
     <div class="chat-bubble">
       <div class="chat-window" id="chatWindow">
         <div class="chat-header">
@@ -586,6 +590,6 @@
       </button>
     </div>
 
-    <script src="js/script.js"></script>
+    <script type="module" src="js/script.js"></script>
   </body>
 </html>
