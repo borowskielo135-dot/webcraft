@@ -1,87 +1,32 @@
-// ============ CONFIG ============
-
-const MODEL = "llama-3.3-70b-versatile";
-
-async function groq(messages, max = 600) {
-  // ZMIANA: Kierujemy zapytanie do Twojego pliku w folderze api
-  // Jeśli plik nazywa się chat-api.js, to wpisz "/api/chat-api"
-  // Jeśli zmieniłeś nazwę na chat.js, to wpisz "/api/chat"
-  const r = await fetch("/api/chat-api", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ messages }), // Tu nie podajesz klucza! Klucz jest bezpieczny na Vercelu.
-  });
-
-  const d = await r.json();
-  if (d.error) {
-    console.error("Błąd AI:", d.error);
-    throw new Error(d.error);
-  }
-  return d.choices[0].message.content;
-}
-
-// Dodaj na górze script.js (po CONFIG):
-import { auth } from "./firebase-config.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { createOrder } from "./orders.js";
+// ============================================================
+// js/script.js  —  BEZ "type=module", wszystko globalne
+// ============================================================
 
 // ============ MARQUEE ============
 const logos = [
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
-  {
-    name: "Dopiero zaczynamy!",
-    icon: `<img src="photos/logo.png" width="20" alt="">`,
-    url: "#",
-  },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
+  { name: "Dopiero zaczynamy!", icon: "🌐", url: "#" },
 ];
+
 function buildMarquee() {
   const t = document.getElementById("marqueeTrack");
+  if (!t) return;
   const all = [...logos, ...logos];
   t.innerHTML = all
     .map(
       (l) => `
-<div class="marquee-item" onclick="window.open('${l.url}','_blank')">
-<div class="marquee-logo">
-  <div class="marquee-logo-icon">${l.icon}</div>
-  <div class="marquee-logo-name">${l.name}</div>
-</div>
-</div>`,
+    <div class="marquee-item" onclick="window.open('${l.url}','_blank')">
+      <div class="marquee-logo">
+        <div class="marquee-logo-icon">${l.icon}</div>
+        <div class="marquee-logo-name">${l.name}</div>
+      </div>
+    </div>`
     )
     .join("");
 }
@@ -90,86 +35,38 @@ buildMarquee();
 // ============ GSAP ANIMATIONS ============
 gsap.registerPlugin(ScrollTrigger);
 
-// Try SplitText — graceful fallback if not loaded
 function trySplit(el) {
-  try {
-    return new SplitText(el, { type: "chars,words" });
-  } catch (e) {
-    return null;
-  }
+  try { return new SplitText(el, { type: "chars,words" }); }
+  catch (e) { return null; }
 }
 
-// NAV
-gsap.to("#logo", { opacity: 1, duration: 0.6, delay: 0.2 });
+gsap.to("#logo",   { opacity: 1, duration: 0.6, delay: 0.2 });
 gsap.to("#navCta", { opacity: 1, duration: 0.6, delay: 0.4 });
-
-// HERO sequence
 gsap.to("#heroGlow", { opacity: 1, duration: 1.5, delay: 0.1 });
-gsap.to("#badge", { opacity: 1, y: 0, duration: 0.7, delay: 0.3 });
+gsap.to("#badge",    { opacity: 1, y: 0, duration: 0.7, delay: 0.3 });
 
-// Hero title — split or fallback
 window.addEventListener("load", () => {
   const st = trySplit("#heroTitle");
   if (st) {
-    gsap.from(st.chars, {
-      opacity: 0,
-      y: 40,
-      stagger: 0.018,
-      duration: 0.6,
-      delay: 0.5,
-      ease: "power3.out",
-    });
+    gsap.from(st.chars, { opacity: 0, y: 40, stagger: 0.018, duration: 0.6, delay: 0.5, ease: "power3.out" });
   } else {
-    gsap.to("#heroTitle .tl", {
-      opacity: 1,
-      y: 0,
-      stagger: 0.15,
-      duration: 0.8,
-      delay: 0.5,
-      ease: "power3.out",
-    });
-    document
-      .querySelectorAll("#heroTitle .tl")
-      .forEach((el) => (el.style.opacity = "0"));
+    document.querySelectorAll("#heroTitle .tl").forEach((el) => (el.style.opacity = "0"));
+    gsap.to("#heroTitle .tl", { opacity: 1, y: 0, stagger: 0.15, duration: 0.8, delay: 0.5, ease: "power3.out" });
   }
 });
 
-gsap.to("#heroSub", {
-  opacity: 1,
-  duration: 0.8,
-  delay: 1,
-  ease: "power2.out",
-});
-gsap.to("#heroBtns", { opacity: 1, duration: 0.7, delay: 1.2 });
+gsap.to("#heroSub",    { opacity: 1, duration: 0.8, delay: 1,   ease: "power2.out" });
+gsap.to("#heroBtns",   { opacity: 1, duration: 0.7, delay: 1.2 });
 gsap.to("#scrollLine", { opacity: 1, duration: 0.6, delay: 1.6 });
-gsap.to("#scrollLine .scroll-line-bar", {
-  scaleY: 0,
-  transformOrigin: "top",
-  duration: 1,
-  delay: 1.8,
-  repeat: -1,
-  yoyo: true,
-  ease: "sine.inOut",
-});
+gsap.to("#scrollLine .scroll-line-bar", { scaleY: 0, transformOrigin: "top", duration: 1, delay: 1.8, repeat: -1, yoyo: true, ease: "sine.inOut" });
 
-// STATS bar
-gsap.from("#statsBar .stat", {
-  opacity: 0,
-  y: 30,
-  stagger: 0.12,
-  duration: 0.6,
-  scrollTrigger: { trigger: "#statsBar", start: "top 85%" },
-});
+gsap.from("#statsBar .stat", { opacity: 0, y: 30, stagger: 0.12, duration: 0.6, scrollTrigger: { trigger: "#statsBar", start: "top 85%" } });
 
-// Counter animation
 ScrollTrigger.create({
-  trigger: "#statsBar",
-  start: "top 80%",
-  once: true,
+  trigger: "#statsBar", start: "top 80%", once: true,
   onEnter() {
     document.querySelectorAll(".stat-num").forEach((el) => {
-      const t = +el.dataset.target,
-        suf = el.dataset.suffix;
+      const t = +el.dataset.target, suf = el.dataset.suffix;
       let c = 0;
       const step = Math.ceil(t / 55);
       const tm = setInterval(() => {
@@ -181,118 +78,41 @@ ScrollTrigger.create({
   },
 });
 
-// Section titles split on scroll
 document.querySelectorAll(".split-title").forEach((el) => {
   const st = trySplit(el);
-  if (st) {
-    gsap.from(st.chars, {
-      opacity: 0,
-      y: 30,
-      stagger: 0.02,
-      duration: 0.5,
-      ease: "power2.out",
-      scrollTrigger: { trigger: el, start: "top 88%", once: true },
-    });
-  }
+  if (st) gsap.from(st.chars, { opacity: 0, y: 30, stagger: 0.02, duration: 0.5, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 88%", once: true } });
 });
 
-// Service cards
 gsap.utils.toArray(".service-card").forEach((card, i) => {
-  gsap.to(card, {
-    opacity: 1,
-    y: 0,
-    duration: 0.65,
-    ease: "power2.out",
-    scrollTrigger: { trigger: card, start: "top 88%", once: true },
-    delay: (i % 3) * 0.1,
-  });
+  gsap.to(card, { opacity: 1, y: 0, duration: 0.65, ease: "power2.out", scrollTrigger: { trigger: card, start: "top 88%", once: true }, delay: (i % 3) * 0.1 });
 });
 
-// Process steps
 gsap.utils.toArray(".process-step").forEach((step, i) => {
-  gsap.to(step, {
-    opacity: 1,
-    y: 0,
-    duration: 0.6,
-    ease: "power2.out",
-    scrollTrigger: { trigger: step, start: "top 88%", once: true },
-    delay: i * 0.12,
-  });
+  gsap.to(step, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", scrollTrigger: { trigger: step, start: "top 88%", once: true }, delay: i * 0.12 });
 });
 
-// Num blocks
 gsap.utils.toArray(".num-block").forEach((b, i) => {
-  gsap.to(b, {
-    opacity: 1,
-    duration: 0.6,
-    y: 0,
-    ease: "power2.out",
-    scrollTrigger: { trigger: b, start: "top 88%", once: true },
-    delay: i * 0.1,
-  });
-  gsap.from(b, {
-    y: 20,
-    scrollTrigger: { trigger: b, start: "top 88%", once: true },
-    delay: i * 0.1,
-    duration: 0.6,
-  });
+  gsap.to(b, { opacity: 1, duration: 0.6, y: 0, ease: "power2.out", scrollTrigger: { trigger: b, start: "top 88%", once: true }, delay: i * 0.1 });
 });
 
-// Review cards
 gsap.utils.toArray(".review-card").forEach((card, i) => {
-  gsap.to(card, {
-    opacity: 1,
-    y: 0,
-    duration: 0.65,
-    ease: "power2.out",
-    scrollTrigger: { trigger: card, start: "top 88%", once: true },
-    delay: i * 0.12,
-  });
+  gsap.to(card, { opacity: 1, y: 0, duration: 0.65, ease: "power2.out", scrollTrigger: { trigger: card, start: "top 88%", once: true }, delay: i * 0.12 });
 });
 
-// FAQ items
 gsap.utils.toArray(".faq-item").forEach((item, i) => {
-  gsap.to(item, {
-    opacity: 1,
-    x: 0,
-    duration: 0.55,
-    ease: "power2.out",
-    scrollTrigger: { trigger: item, start: "top 90%", once: true },
-    delay: i * 0.07,
-  });
+  gsap.to(item, { opacity: 1, x: 0, duration: 0.55, ease: "power2.out", scrollTrigger: { trigger: item, start: "top 90%", once: true }, delay: i * 0.07 });
 });
 
-// CTA title
 ScrollTrigger.create({
-  trigger: "#ctaTitle",
-  start: "top 85%",
-  once: true,
+  trigger: "#ctaTitle", start: "top 85%", once: true,
   onEnter() {
     const st = trySplit("#ctaTitle");
-    if (st)
-      gsap.from(st.chars, {
-        opacity: 0,
-        y: 25,
-        stagger: 0.025,
-        duration: 0.5,
-        ease: "power2.out",
-      });
+    if (st) gsap.from(st.chars, { opacity: 0, y: 25, stagger: 0.025, duration: 0.5, ease: "power2.out" });
   },
 });
 
-// Parallax glow
-gsap.to("#heroGlow", {
-  y: -80,
-  ease: "none",
-  scrollTrigger: {
-    trigger: ".hero",
-    start: "top top",
-    end: "bottom top",
-    scrub: true,
-  },
-});
+gsap.to("#heroGlow", { y: -80, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
 
-// NAV scroll
 window.addEventListener("scroll", () => {
   document.getElementById("nav").style.borderBottomColor =
     window.scrollY > 50 ? "rgba(192,192,192,.14)" : "rgba(192,192,192,.04)";
@@ -301,11 +121,8 @@ window.addEventListener("scroll", () => {
 // ============ FAQ ============
 document.querySelectorAll(".faq-q").forEach((q) => {
   q.addEventListener("click", () => {
-    const item = q.parentElement,
-      isOpen = item.classList.contains("open");
-    document
-      .querySelectorAll(".faq-item")
-      .forEach((i) => i.classList.remove("open"));
+    const item = q.parentElement, isOpen = item.classList.contains("open");
+    document.querySelectorAll(".faq-item").forEach((i) => i.classList.remove("open"));
     if (!isOpen) item.classList.add("open");
   });
 });
@@ -318,23 +135,46 @@ function openModal() {
 function closeModal() {
   document.getElementById("quoteModal").classList.remove("open");
   document.body.style.overflow = "";
+  // reset po zamknięciu
+  document.getElementById("formStep").style.display = "block";
+  document.getElementById("successStep").style.display = "none";
+  document.getElementById("submitBtn").textContent = "Wyceń mój projekt ✦";
+  document.getElementById("submitBtn").disabled = false;
+  document.getElementById("quoteResult").classList.remove("show");
 }
-function closeModalOutside(e) {
-  if (e.target === document.getElementById("quoteModal")) closeModal();
-}
+
+document.getElementById("navCta").addEventListener("click", openModal);
+document.getElementById("heroQuoteBtn").addEventListener("click", openModal);
+document.getElementById("ctaQuoteBtn").addEventListener("click", openModal);
+document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
+document.getElementById("modalCloseFinalBtn").addEventListener("click", closeModal);
+
+// klik poza modalem
+document.getElementById("quoteModal").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ============ WYCENA AI ============
+let quoteData = null;
+
+document.getElementById("submitBtn").addEventListener("click", function() {
+  if (this.dataset.step === "send") {
+    finalSubmit();
+  } else {
+    submitQuote();
+  }
+});
 
 async function submitQuote() {
-  const name = document.getElementById("f-name").value.trim();
-  const email = document.getElementById("f-email").value.trim();
-  const type = document.getElementById("f-type").value;
+  const name     = document.getElementById("f-name").value.trim();
+  const email    = document.getElementById("f-email").value.trim();
+  const type     = document.getElementById("f-type").value;
   const industry = document.getElementById("f-industry").value.trim();
   const features = document.getElementById("f-features").value;
-  const desc = document.getElementById("f-desc").value.trim();
+  const desc     = document.getElementById("f-desc").value.trim();
 
   if (!name || !email || !type || !industry) {
-    alert(
-      "Proszę wypełnić wymagane pola (Imię, Email, Rodzaj strony, Branża).",
-    );
+    alert("Proszę wypełnić wymagane pola (Imię, Email, Rodzaj strony, Branża).");
     return;
   }
 
@@ -356,8 +196,15 @@ Odpowiedz TYLKO JSON bez markdown:
 Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł, redesign 500-1500 zł, aplikacja 5000-15000 zł.`;
 
   try {
-    const raw = await groq([{ role: "user", content: prompt }]);
+    const r = await fetch("/api/chat-api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "user", content: prompt }] }),
+    });
+    const d = await r.json();
+    const raw = d.choices[0].message.content;
     const json = JSON.parse(raw.replace(/```json|```/g, "").trim());
+
     document.getElementById("quotePrice").textContent =
       `${json.cena_min.toLocaleString("pl-PL")} – ${json.cena_max.toLocaleString("pl-PL")} zł`;
     document.getElementById("quoteNote").textContent =
@@ -367,13 +214,13 @@ Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł
       bd += `<div class="quote-item"><span>${p.nazwa}</span><span>${p.cena}</span></div>`;
     });
     document.getElementById("quoteBreakdown").innerHTML = bd;
-    document.getElementById("quoteResult").classList.add("show");
+    quoteData = json;
   } catch (e) {
     const fb = {
-      landing: { min: 300, max: 1000, czas: "3–5 dni" },
-      firmowa: { min: 700, max: 2500, czas: "7–14 dni" },
-      sklep: { min: 1500, max: 3000, czas: "14–28 dni" },
-      redesign: { min: 500, max: 1500, czas: "5–10 dni" },
+      landing:   { min: 300,  max: 1000,  czas: "3–5 dni" },
+      firmowa:   { min: 700,  max: 2500,  czas: "7–14 dni" },
+      sklep:     { min: 1500, max: 3000,  czas: "14–28 dni" },
+      redesign:  { min: 500,  max: 1500,  czas: "5–10 dni" },
       aplikacja: { min: 5000, max: 15000, czas: "30–60 dni" },
     };
     const f = fb[type] || fb.firmowa;
@@ -382,111 +229,85 @@ Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł
     document.getElementById("quoteNote").textContent =
       `⏱ Czas realizacji: ${f.czas} • Skontaktuję się z Tobą w ciągu 24h z finalną ofertą.`;
     document.getElementById("quoteBreakdown").innerHTML = "";
-    document.getElementById("quoteResult").classList.add("show");
+    quoteData = f;
   }
 
   document.getElementById("aiThinking").classList.remove("show");
+  document.getElementById("quoteResult").classList.add("show");
+
   btn.disabled = false;
   btn.textContent = "Wyślij zapytanie do agencji →";
-
-  // ZMIANA: To sprawia, że drugie kliknięcie wysyła dane do Ciebie
-  btn.onclick = finalSubmit;
+  btn.dataset.step = "send";
 }
 
 async function finalSubmit() {
   const btn = document.getElementById("submitBtn");
-  btn.innerText = "Zapisywanie...";
+  btn.textContent = "Wysyłanie...";
   btn.disabled = true;
 
-  const user = auth.currentUser;
-
-  const formData = {
-    projekt: document.getElementById("f-type").value,
-    branza: document.getElementById("f-industry").value,
-    features: document.getElementById("f-features").value,
-    opis: document.getElementById("f-desc").value,
+  const payload = {
+    klient:    document.getElementById("f-name").value.trim(),
+    email:     document.getElementById("f-email").value.trim(),
+    tel:       document.getElementById("f-phone").value.trim(),
+    projekt:   document.getElementById("f-type").value,
+    branza:    document.getElementById("f-industry").value.trim(),
+    features:  document.getElementById("f-features").value,
+    opis:      document.getElementById("f-desc").value.trim(),
+    wycena_ai: document.getElementById("quotePrice").textContent,
   };
-  const aiQuote = document.getElementById("quotePrice").innerText;
 
+  // Sprawdź czy zalogowany przez Firebase
+  // (Firebase SDK ładujemy przez CDN w panel.html, tu robimy prosty fallback)
   try {
-    if (user) {
-      // Zalogowany — zapis do Firestore
-      await createOrder(
-        user.uid,
-        user.displayName || document.getElementById("f-name").value,
-        user.email,
-        formData,
-        aiQuote,
-      );
-    } else {
-      // Niezalogowany — fallback do Formspree jak wcześniej
-      const payload = {
-        klient: document.getElementById("f-name").value,
-        email: document.getElementById("f-email").value,
-        tel: document.getElementById("f-phone").value,
-        ...formData,
-        wycena_ai: aiQuote,
-      };
-      const res = await fetch("https://formspree.io/f/xgodpnjk", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Formspree error");
-    }
-
-    document.getElementById("formStep").style.display = "none";
-    document.getElementById("successStep").innerHTML = `
-      <div style="font-size:3rem;margin-bottom:16px"><img src="photos/succes.png" width="50"/></div>
-      <h3 style="font-size:1.3rem;font-weight:700;margin-bottom:10px">Zapytanie wysłane!</h3>
-      <p style="color:rgba(240,240,240,.5);font-size:.9rem;line-height:1.7">
-        Wycena AI została przesłana. Skontaktuję się z Tobą w ciągu 24h z finalną ofertą.
-      </p>
-      ${
-        user
-          ? `<a href="panel.html"><button class="btn-primary" style="margin-top:20px">📋 Przejdź do swojego panelu →</button></a>`
-          : `
-      <p style="margin-top:16px;font-size:.82rem;color:rgba(240,240,240,.35)">
-        💡 <a href="panel.html" style="color:var(--pl)">Załóż konto</a> aby śledzić status swojego zamówienia.
-      </p>`
-      }
-      <br/>
-      <button class="btn-primary" style="margin-top:12px;background:transparent;border:1px solid rgba(192,192,192,.2)" onclick="closeModal()">Zamknij okno</button>
-    `;
-    document.getElementById("successStep").style.display = "block";
-  } catch (err) {
-    alert("Błąd połączenia. Spróbuj ponownie.");
-  } finally {
-    btn.disabled = false;
-    btn.innerText = "Wyślij zapytanie →";
+    const res = await fetch("https://formspree.io/f/xgodpnjk", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Błąd wysyłania");
+  } catch (e) {
+    console.warn("Formspree error:", e);
   }
+
+  document.getElementById("formStep").style.display = "none";
+  document.getElementById("successStep").style.display = "block";
+  btn.disabled = false;
+  delete btn.dataset.step;
 }
+
+// ============ SCROLL btn ============
+document.getElementById("heroScrollBtn").addEventListener("click", () => {
+  document.getElementById("opinie").scrollIntoView({ behavior: "smooth" });
+});
+
 // ============ CHAT ============
-let chatOpen = false,
-  chatHistory = [];
-const SYS = `Jesteś przyjaznym asystentem agencji webowej WebCraft. Odpowiadasz po polsku, krótko (max 3-4 zdania). Ceny: landing 800-1800 zł, firmowa 1500-3500 zł, sklep 3000-7000 zł. Czas: landing 3-5 dni, firmowa 7-14 dni, sklep 14-28 dni. Jeśli ktoś pyta o wycenę — zachęć do formularza.`;
+let chatOpen = false;
+let chatHistory = [];
+const CHAT_SYS = `Jesteś przyjaznym asystentem agencji webowej WebCraft. Odpowiadasz po polsku, krótko (max 3-4 zdania). Ceny: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł. Czas: landing 3-5 dni, firmowa 7-14 dni, sklep 14-28 dni. Jeśli ktoś pyta o wycenę — zachęć do formularza.`;
+
+document.getElementById("chatToggle").addEventListener("click", toggleChat);
+document.getElementById("chatSendBtn").addEventListener("click", sendMsg);
+document.getElementById("chatInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendMsg();
+});
+document.querySelectorAll(".sug-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.getElementById("chatInput").value = btn.dataset.msg;
+    sendMsg();
+  });
+});
 
 function toggleChat() {
   chatOpen = !chatOpen;
   document.getElementById("chatWindow").classList.toggle("open", chatOpen);
-  const badge = document
-    .getElementById("chatToggle")
-    .querySelector(".chat-badge");
+  const badge = document.querySelector(".chat-badge");
   if (badge) badge.style.display = "none";
   document.getElementById("chatToggle").innerHTML = chatOpen
     ? "✕"
     : '💬<div class="chat-badge" style="display:none">1</div>';
+
   if (chatOpen && !document.getElementById("chatMsgs").children.length) {
-    setTimeout(
-      () =>
-        addBot(
-          "Cześć! 👋 Jestem asystentem WebCraft. Chętnie odpowiem na pytania o strony internetowe lub pomogę oszacować koszt projektu. W czym mogę pomóc?",
-        ),
-      300,
-    );
+    setTimeout(() => addBot("Cześć! 👋 Jestem asystentem WebCraft. Chętnie odpowiem na pytania o strony internetowe lub pomogę oszacować koszt projektu. W czym mogę pomóc?"), 300);
   }
 }
 
@@ -512,19 +333,13 @@ function addTyping() {
   const d = document.createElement("div");
   d.className = "msg bot msg-typing";
   d.id = "typing";
-  d.innerHTML =
-    '<div class="dot-anim"><span></span><span></span><span></span></div>';
+  d.innerHTML = '<div class="dot-anim"><span></span><span></span><span></span></div>';
   m.appendChild(d);
   m.scrollTop = m.scrollHeight;
 }
 function removeTyping() {
   const t = document.getElementById("typing");
   if (t) t.remove();
-}
-
-function sendSug(t) {
-  document.getElementById("chatInput").value = t;
-  sendMsg();
 }
 
 async function sendMsg() {
@@ -536,8 +351,14 @@ async function sendMsg() {
   chatHistory.push({ role: "user", content: t });
   addTyping();
   try {
-    const msgs = [{ role: "system", content: SYS }, ...chatHistory];
-    const reply = await groq(msgs, 300);
+    const msgs = [{ role: "system", content: CHAT_SYS }, ...chatHistory];
+    const r = await fetch("/api/chat-api", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: msgs }),
+    });
+    const d = await r.json();
+    const reply = d.choices[0].message.content;
     removeTyping();
     addBot(reply);
     chatHistory.push({ role: "assistant", content: reply });
