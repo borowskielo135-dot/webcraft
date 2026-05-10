@@ -1,16 +1,18 @@
 // ============ CONFIG ============
-const GROQ_KEY = "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";
+const GROQ_KEY =
+  "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";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = "llama-3.3-70b-versatile";
 
-async function groq(messages) {
-  // Zamiast do Groq, uderzamy do naszego pliku w folderze api
-  const r = await fetch("/api/chat", {
+async function groq(messages, max = 600) {
+  const r = await fetch(GROQ_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages: messages }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + GROQ_KEY,
+    },
+    body: JSON.stringify({ model: MODEL, max_tokens: max, messages }),
   });
-
   const d = await r.json();
   return d.choices[0].message.content;
 }
@@ -24,7 +26,7 @@ const logos = [
   { name: "LuxDecor", icon: "✨", url: "#" },
   { name: "SwiftCargo", icon: "📦", url: "#" },
   { name: "PrimeLaw", icon: "⚖️", url: "#" },
-  { name: "indrop  ", icon: "🎨", url: "https://indrop.pl/" },
+  { name: "ArtStudio", icon: "🎨", url: "#" },
 ];
 function buildMarquee() {
   const t = document.getElementById("marqueeTrack");
@@ -251,7 +253,9 @@ gsap.to("#heroGlow", {
 // NAV scroll
 window.addEventListener("scroll", () => {
   document.getElementById("nav").style.borderBottomColor =
-    window.scrollY > 50 ? "rgba(192,192,192,.14)" : "rgba(192,192,192,.04)";
+    window.scrollY > 50
+      ? "rgba(192,192,192,.14)"
+      : "rgba(192,192,192,.04)";
 });
 
 // ============ FAQ ============
@@ -306,7 +310,7 @@ async function submitQuote() {
 Odpowiedz TYLKO JSON bez markdown:
 {"cena_min":number,"cena_max":number,"czas_realizacji":"X-Y dni","pozycje":[{"nazwa":"...","cena":"X–Y zł"}],"uwagi":"2 zdania po polsku dla klienta"}
 
-Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł, redesign 500-1500 zł, aplikacja 5000-15000 zł.`;
+Widełki cenowe: landing 800-1800 zł, firmowa 1500-3500 zł, sklep 3000-7000 zł, redesign 1000-3000 zł, aplikacja 5000-15000 zł.`;
 
   try {
     const raw = await groq([{ role: "user", content: prompt }]);
@@ -323,10 +327,10 @@ Widełki cenowe: landing 300-1000 zł, firmowa 700-2500 zł, sklep 1500-3000 zł
     document.getElementById("quoteResult").classList.add("show");
   } catch (e) {
     const fb = {
-      landing: { min: 300, max: 1000, czas: "3–5 dni" },
-      firmowa: { min: 700, max: 2500, czas: "7–14 dni" },
-      sklep: { min: 1500, max: 3000, czas: "14–28 dni" },
-      redesign: { min: 500, max: 1500, czas: "5–10 dni" },
+      landing: { min: 800, max: 1800, czas: "3–5 dni" },
+      firmowa: { min: 1500, max: 3500, czas: "7–14 dni" },
+      sklep: { min: 3000, max: 7000, czas: "14–28 dni" },
+      redesign: { min: 1000, max: 3000, czas: "5–10 dni" },
       aplikacja: { min: 5000, max: 15000, czas: "30–60 dni" },
     };
     const f = fb[type] || fb.firmowa;
@@ -356,7 +360,9 @@ const SYS = `Jesteś przyjaznym asystentem agencji webowej WebCraft. Odpowiadasz
 
 function toggleChat() {
   chatOpen = !chatOpen;
-  document.getElementById("chatWindow").classList.toggle("open", chatOpen);
+  document
+    .getElementById("chatWindow")
+    .classList.toggle("open", chatOpen);
   const badge = document
     .getElementById("chatToggle")
     .querySelector(".chat-badge");
@@ -429,6 +435,8 @@ async function sendMsg() {
     if (chatHistory.length > 14) chatHistory = chatHistory.slice(-14);
   } catch (e) {
     removeTyping();
-    addBot("Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie! 📩");
+    addBot(
+      "Przepraszam, wystąpił problem z połączeniem. Spróbuj ponownie! 📩",
+    );
   }
 }
