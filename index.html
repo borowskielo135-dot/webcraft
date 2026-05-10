@@ -7,8 +7,77 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="js/SplitText.min.js"></script>
+    <!-- Firebase Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/png" href="photos/logo.png" />
+    <style>
+      /* Panel button w nav */
+      .nav-panel-btn {
+        padding: 10px 22px;
+        border-radius: 8px;
+        border: 1px solid rgba(192, 192, 192, 0.18);
+        color: rgba(240, 240, 240, 0.75);
+        text-decoration: none;
+        font-size: 0.88rem;
+        font-weight: 500;
+        transition: all 0.3s;
+        background: rgba(192, 192, 192, 0.05);
+      }
+      .nav-panel-btn:hover {
+        border-color: rgba(192, 192, 192, 0.4);
+        color: #fff;
+        background: rgba(192, 192, 192, 0.1);
+      }
+      /* Hero auth btns */
+      .hero-auth-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+        justify-content: center;
+        opacity: 0;
+      }
+      .btn-outline-purple {
+        padding: 11px 26px;
+        border-radius: 10px;
+        border: 1px solid rgba(168, 85, 247, 0.45);
+        background: transparent;
+        color: #a855f7;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      .btn-outline-purple:hover {
+        background: rgba(168, 85, 247, 0.1);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      /* Modal login gate */
+      #loginGate {
+        display: none;
+        text-align: center;
+        padding: 40px 0;
+      }
+      #loginGate h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      #loginGate p {
+        font-size: 0.88rem;
+        color: rgba(240, 240, 240, 0.5);
+        margin-bottom: 24px;
+        line-height: 1.7;
+      }
+    </style>
   </head>
   <body>
     <nav id="nav">
@@ -21,14 +90,9 @@
       </ul>
       <div class="nav-right">
         <a href="panel.html" class="nav-panel-btn" id="navPanelBtn">Panel →</a>
-        <button class="nav-cta" id="navCta">Darmowa wycena →</button>
-        <a
-          href="panel.html"
-          class="nav-cta"
-          id="navLoginBtn"
-          style="text-decoration: none; display: none"
-          >Zaloguj się →</a
-        >
+        <button class="nav-cta" id="navCta" style="opacity: 0">
+          Darmowa wycena →
+        </button>
       </div>
     </nav>
 
@@ -50,50 +114,24 @@
         Tworzę nowoczesne, szybkie i eleganckie strony internetowe dla firm,
         które chcą wyróżnić się w sieci i zdobywać klientów 24/7.
       </p>
-      <div class="hero-btns" id="heroBtns">
+      <div class="hero-btns" id="heroBtns" style="opacity: 0">
         <button class="btn-primary" id="heroQuoteBtn">
           Zacznij projekt — bezpłatna wycena ✦
         </button>
-        <button class="btn-secondary" id="heroScrollBtn">
-          Zobacz realizacje
-        </button>
+        <button class="btn-secondary" id="heroScrollBtn">Zobacz opinie</button>
       </div>
-
-      <!-- Przyciski logowania/rejestracji w hero -->
-      <div
-        class="hero-auth-btns"
-        id="heroAuthBtns"
-        style="
-          display: flex;
-          gap: 12px;
-          margin-top: 16px;
-          flex-wrap: wrap;
-          justify-content: center;
-        "
-      >
+      <div class="hero-auth-row" id="heroAuthRow">
         <a
           href="panel.html"
           class="btn-secondary"
-          style="text-decoration: none; padding: 12px 28px; font-size: 0.9rem"
+          style="text-decoration: none; padding: 11px 26px; font-size: 0.9rem"
           >Zaloguj się →</a
         >
-        <a
-          href="panel.html#register"
-          class="btn-primary"
-          style="
-            text-decoration: none;
-            padding: 12px 28px;
-            font-size: 0.9rem;
-            background: transparent;
-            border: 1px solid rgba(168, 85, 247, 0.5);
-            color: var(--pl);
-            box-shadow: none;
-          "
+        <a href="panel.html#register" class="btn-outline-purple"
           >Zarejestruj się →</a
         >
       </div>
-
-      <div class="scroll-line" id="scrollLine">
+      <div class="scroll-line" id="scrollLine" style="opacity: 0">
         <span>Scroll</span>
         <div class="scroll-line-bar"></div>
       </div>
@@ -348,7 +386,7 @@
             <div class="avatar">PZ</div>
             <div>
               <div class="reviewer-name">Patryk Zając</div>
-              <div class="reviewer-role">właściciel pizzeri</div>
+              <div class="reviewer-role">Właściciel pizzerii</div>
             </div>
           </div>
         </div>
@@ -374,8 +412,6 @@
           <div class="faq-a">
             Cena zależy od zakresu projektu. Prosta landing page zaczyna się od
             300 zł, strona firmowa od 700 zł, a sklep internetowy od 1500 zł.
-            Skorzystaj z formularza wyceny — AI oszacuje koszt natychmiast, a ja
-            potwierdzę indywidualnie.
           </div>
         </div>
         <div class="faq-item">
@@ -385,7 +421,6 @@
           <div class="faq-a">
             Landing page gotowa jest zazwyczaj w 2–5 dni roboczych. Strona
             firmowa zajmuje 1–2 tygodnie. Sklep internetowy to 2–4 tygodnie.
-            Zawsze podaję realny termin przed startem projektu.
           </div>
         </div>
         <div class="faq-item">
@@ -395,8 +430,7 @@
           </div>
           <div class="faq-a">
             Oczywiście. Każda strona jest w pełni responsywna i wygląda
-            doskonale zarówno na komputerze, tablecie jak i smartfonie. To
-            absolutny standard.
+            doskonale zarówno na komputerze, tablecie jak i smartfonie.
           </div>
         </div>
         <div class="faq-item">
@@ -404,9 +438,8 @@
             Co jest potrzebne żeby zacząć? <span class="faq-icon">+</span>
           </div>
           <div class="faq-a">
-            Wystarczy wypełnić formularz wyceny. Zapytam Cię o branżę, cel
-            strony i ewentualne inspiracje — i przygotuję ofertę. Nie
-            potrzebujesz nic technicznego.
+            Wystarczy założyć konto i wypełnić formularz wyceny. Zapytam Cię o
+            branżę, cel strony i ewentualne inspiracje.
           </div>
         </div>
         <div class="faq-item">
@@ -416,8 +449,7 @@
           </div>
           <div class="faq-a">
             Tak! Jeśli chcesz mieć panel do samodzielnej edycji, integruję
-            stronę z prostym CMS-em. Możesz wtedy zmieniać teksty, zdjęcia i
-            ceny bez wiedzy technicznej.
+            stronę z prostym CMS-em.
           </div>
         </div>
       </div>
@@ -451,10 +483,28 @@
         <button class="modal-close" id="modalCloseBtn">✕</button>
         <h2>Bezpłatna wycena</h2>
         <p class="modal-sub">
-          AI oszacuje koszt Twojego projektu w mniej niż 30 sekund. Skontaktuję
-          się z Tobą w ciągu 24h z finalną ofertą.
+          AI oszacuje koszt Twojego projektu w mniej niż 30 sekund.
         </p>
 
+        <!-- Gate: wymagane logowanie -->
+        <div id="loginGate">
+          <div style="font-size: 2.5rem; margin-bottom: 14px">🔐</div>
+          <h3>Wymagane logowanie</h3>
+          <p>
+            Aby uzyskać wycenę i śledzić status zamówienia,<br />musisz się
+            najpierw zalogować lub zarejestrować.
+          </p>
+          <a href="panel.html" style="text-decoration: none">
+            <button class="btn-primary" style="margin-right: 10px">
+              Zaloguj się →
+            </button>
+          </a>
+          <a href="panel.html#register" style="text-decoration: none">
+            <button class="btn-secondary">Zarejestruj się</button>
+          </a>
+        </div>
+
+        <!-- Formularz -->
         <div id="formStep">
           <div class="form-row">
             <div class="form-group">
@@ -544,19 +594,24 @@
               line-height: 1.7;
             "
           >
-            Wycena AI została przesłana. Skontaktuję się z Tobą w ciągu 24
-            godzin z finalną ofertą.
+            Skontaktuję się z Tobą w ciągu 24h z finalną ofertą.
           </p>
+          <a href="panel.html"
+            ><button class="btn-primary" style="margin-top: 20px">
+              📋 Przejdź do panelu →
+            </button></a
+          >
+          <br />
           <button
             class="btn-primary"
+            id="modalCloseFinalBtn"
             style="
-              margin-top: 20px;
+              margin-top: 10px;
               background: transparent;
               border: 1px solid rgba(192, 192, 192, 0.2);
             "
-            id="modalCloseFinalBtn"
           >
-            Zamknij okno
+            Zamknij
           </button>
         </div>
       </div>
@@ -581,7 +636,7 @@
             ⏱ Czas realizacji
           </button>
           <button class="sug-btn" data-msg="Co obejmuje opieka po wdrożeniu?">
-            🛡 Opieka po wdrożeniu
+            🛡 Opieka
           </button>
         </div>
         <div class="chat-footer">
@@ -599,7 +654,10 @@
       </button>
     </div>
 
-    <!-- WAŻNE: script.js BEZ type="module" -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/orders.js"></script>
     <script src="js/script.js"></script>
+    <!-- lub panel.js -->
   </body>
 </html>
